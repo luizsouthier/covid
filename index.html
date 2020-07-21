@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="jquery.csv.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+	google.charts.load('current', {'packages': ['corechart', 'controls'],'language': 'pt-br'});
+	google.charts.setOnLoadCallback(carrega);
+
+	var nacionalcasos;
+	var nacionalobitos;
+	var nacionalcasosA;
+	var nacionalobitosA;
+	var evolucao;
+	function carrega(){
+		$.get("dados/nacional.csv", function(csvString) {
+			var arrayData = $.csv.toArrays(csvString, {onParseValue: $.csv.hooks.castToScalar});
+			
+			for(var j=1; j<arrayData.length; j++){
+			  arrayData[j][0]= new Date(arrayData[j][0])
+			}
+			nacional = new google.visualization.arrayToDataTable(arrayData);
+			nacional.setColumnLabel(0,'Data')
+			nacional.setColumnLabel(1,'Casos Acumulados')
+			nacional.setColumnLabel(2,'Casos')
+			nacional.setColumnLabel(3,'Mortes Acumuladas')
+			nacional.setColumnLabel(4,'Mortes')
+			nacional.setColumnLabel(5,'Média móvel de casos')
+			nacional.setColumnLabel(6,'Média móvel de mortes')
+			nacionalcasos = new google.visualization.DataView(nacional);
+			nacionalcasos.setColumns([0,2,5])
+			
+			var date_formatter = new google.visualization.DateFormat({ 
+				pattern: "dd MMMM yyyy"
+			}); 
+			date_formatter.format(nacional,0);
+			
+			nacionalobitos = new google.visualization.DataView(nacional);
+			nacionalobitos.setColumns([0,4,6])
+			nacionalcasosA = new google.visualization.DataView(nacional);
+			nacionalcasosA.setColumns([0,1])
+			nacionalobitosA = new google.visualization.DataView(nacional);
+			nacionalobitosA.setColumns([0,3])
+
+			google.charts.setOnLoadCallback(graficonacional);
+		});
+		
+		$.get("dados/evolucao2.csv", function(csvString) {
+			var arrayData = $.csv.toArrays(csvString, {onParseValue: $.csv.hooks.castToScalar});
+			
+			for(var j=1; j<arrayData.length; j++){
+			  arrayData[j][0]= new Date(arrayData[j][0])
+			}
+			data = new google.visualization.arrayToDataTable(arrayData);
+			
+			
+			var columns = [0];
+			
+			for (var i = 1; i < data.getNumberOfColumns(); i++) {
+			  var range = data.getColumnRange(i);
+			  if ((range.min + range.max) !== 0) {
+				columns.push(i);
+			  }
+			}
+			evolucao = new google.visualization.DataView(data);
+            evolucao.setColumns(columns);
+						
+			var date_formatter = new google.visualization.DateFormat({ 
+				pattern: "dd MMMM yyyy"
+			}); 
+			date_formatter.format(evolucao,0);
+
+			google.charts.setOnLoadCallback(graficoevolucao);
+		});
+	}
+
+	function graficonacional(){
+
+	options = {
+		seriesType: 'bars',
+		series: {
+			0: {color: '#3399ff'},
+			1: {type: 'line', lineWidth: 5, color: 'red'}
+		},
+		hAxis:{ minorGridlines:{count:0}},
+		legend: { position: 'bottom', maxLines: 1 },
+        bar: { groupWidth: '90%' },
+		chartArea:{left:'12%',top:10,width:'80%',height:350}
+	};
+	
+	options2 = {
+		series: {
+			0: {color: '#3399ff'}
+		},
+		hAxis:{ minorGridlines:{count:0}},
+		legend: { position: 'bottom', maxLines: 1 },
+        bar: { groupWidth: '90%' },
+		vAxis: {
+             scaleType: 'log',
+        },
+		legend: { position: 'bottom', maxLines: 1 },
+		chartArea:{left:'12%',top:10,width:'80%',height:350}
+	};
+		
+	nacionalcasoschart = new google.visualization.ComboChart(document.getElementById('nacionalcasos'));
+	nacionalcasoschart.draw(nacionalcasos,options);
+	nacionalobitoschart = new google.visualization.ComboChart(document.getElementById('nacionalobitos'));
+	nacionalobitoschart.draw(nacionalobitos,options);
+	nacionalcasosAchart = new google.visualization.AreaChart(document.getElementById('nacionalcasosA'));
+	nacionalcasosAchart.draw(nacionalcasosA,options2);
+	nacionalobitosAchart = new google.visualization.AreaChart(document.getElementById('nacionalobitosA'));
+	nacionalobitosAchart.draw(nacionalobitosA,options2);
+	}
+	function graficoevolucao(){
+		
+	options3 = {
+		hAxis:{ minorGridlines:{count:0}},
+		vAxis:{direction: -1, maxValue: 5.5, minVlaue:0.5},
+		legend: { position: 'top', maxLines: 3 },
+		pointSize: 20,
+        pointShape: 'square'
+	}
+	
+	var dashboard = new google.visualization.Dashboard(document.getElementById('evolucao_dash'));
+
+	evolucaochart = new google.visualization.ChartWrapper({
+		chartType: 'Table',
+        containerId: 'evolucao_graf',
+		options: options3});
+	
+	var timeline = new google.visualization.ControlWrapper({
+          controlType: 'DateRangeFilter',
+          containerId: 'evolucao_filter',
+          options: {
+            filterColumnLabel: 'data'
+          }
+        });
+	dashboard.bind(timeline, evolucaochart);
+	dashboard.draw(evolucao);
+	}
+    </script>
+    </head>
+    <body style="background: #99ccff; padding-top: 50px">
+		<nav class="fixed-top navbar navbar-expand-lg navbar-light bg-light">
+		  <span class="navbar-brand mb-0 h1">Painel Covid-19</span>
+			    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarText">
+				<ul class="navbar-nav mr-auto">
+			  	  <li class="nav-item">
+					<a class="nav-link" href="index.html">Análise nacional</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="estado.html">Análise por estado/município</a>
+				  </li>
+				</ul>
+				<span class="navbar-text">
+				  <a class="nav-link" href="sobre.html">Sobre</a>
+				</span>
+				</div>
+		</nav>
+		<div class="row rounded border m-5" style="background: white">
+			<div class="row mx-auto my-3"><h5>Evolução da doença - Brasil</h5></div>
+			<div class="row" style="width: 100%;">
+				<div class="col-md">
+					<img style="max-height: 350px; width: 100%" src="nacional.gif">
+				</div>
+				<div class="col-md">
+					<img style="max-height: 350px; width: 100%" src="nacional_mun.gif">
+				</div>
+			</div>
+			<div class="row mx-auto my-3">
+				<div>
+				<span class="badge" style="background: #F57622">Casos</span>
+				<span class="badge" style="background: #ff9999">Mortes em crescimento</span>
+				<span class="badge" style="background: #ffff66">Mortes em estabilidade</span>
+				<span class="badge" style="background: #99ccff">Mortes decaindo</span>
+				<p class="font-weight-light m-5">Fonte: Secretarias Estaduais de Saúde</p>
+				</div>
+			</div>
+		</div>
+		<div class="row rounded border m-5" style="background: white">
+			<div class="row mx-auto my-3"><h5>Evolução - Brasil</h5></div>
+			<div id="evolucao_dash" style="width: 100%">
+				<div id="evolucao_graf" style="width: 100%; height: 400px;"></div>
+				<div class="m-auto" id="evolucao_filter" style="width: 600px;background: red"></div>
+			</div>
+			<div class="row mx-auto my-3">
+				<p class="font-weight-light m-5">
+				Fonte: Secretarias Estaduais de Saúde<br>A média móvel é calculada sobre os últimos 7 dias. É utilizada como indicador para atenuar as oscilações da curva causadas pelo represamento de notificações aos fins de semana. </p>
+			</div>
+		</div>
+		<div class="row rounded border m-5" style="background: white">
+			<div class="row mx-auto my-3"><h5>Mortes - Brasil</h5></div>
+			<div id="nacionalobitos" style="width: 100%; height: 400px;"></div>
+			<div class="row mx-auto my-3">
+				<p class="font-weight-light m-5">
+				Fonte: Secretarias Estaduais de Saúde<br>A média móvel é calculada sobre os últimos 7 dias. É utilizada como indicador para atenuar as oscilações da curva causadas pelo represamento de notificações aos fins de semana. </p>
+			</div>
+		</div>
+		<div class="row rounded border m-5" style="background: white">
+			<div class="row mx-auto my-3"><h5>Casos - Brasil</h5></div>
+			<div id="nacionalcasos" style="width: 100%; height: 400px;"></div>
+			<div class="row mx-auto my-3">
+				<p class="font-weight-light m-5">
+				Fonte: Secretarias Estaduais de Saúde<br>A média móvel é calculada sobre os últimos 7 dias. É utilizada como indicador para atenuar as oscilações da curva causadas pelo represamento de notificações aos fins de semana. </p>
+			</div>
+		</div>
+		<div class="row rounded border m-5" style="background: white">
+			<div class="row mx-auto my-3"><h5>Casos e Mortes acumulados - Brasil</h5></div>
+			<div class="row" style="width: 100%;">
+				<div class="col-md">
+					<div id="nacionalcasosA" style="width: 100%; height: 400px;"></div>
+				</div>
+				<div class="col-md">
+					<div id="nacionalobitosA" style="width: 100%; height: 400px;"></div>
+				</div>
+			</div>
+			<div class="row mx-auto my-3">
+				<p class="font-weight-light m-5">Fonte: Secretarias Estaduais de Saúde</p>
+			</div>
+		</div>
+	</body>
+</html>
