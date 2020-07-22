@@ -15,6 +15,21 @@
     <script type="text/javascript" src="jquery.csv.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <style>
+		.bg-image {
+
+		  background-image: url("fundo.jpg");
+
+		  #filter: blur(8px);
+		  #-webkit-filter: blur(8px);
+
+		  height: 100%;
+
+		  background-position: center;
+		  background-repeat: no-repeat;
+		  background-size: cover;
+		}
+	</style>
     <script>window.twttr = (function(d, s, id) {
 	  var js, fjs = d.getElementsByTagName(s)[0],
 		t = window.twttr || {};
@@ -73,26 +88,14 @@
 			google.charts.setOnLoadCallback(graficonacional);
 		});
 		
-		$.get("dados/evolucao2.csv", function(csvString) {
+		$.get("dados/evolucao.csv", function(csvString) {
 			var arrayData = $.csv.toArrays(csvString, {onParseValue: $.csv.hooks.castToScalar});
 			
 			for(var j=1; j<arrayData.length; j++){
 			  arrayData[j][0]= new Date(arrayData[j][0])
 			}
-			data = new google.visualization.arrayToDataTable(arrayData);
+			evolucao = new google.visualization.arrayToDataTable(arrayData);
 			
-			
-			var columns = [0];
-			
-			for (var i = 1; i < data.getNumberOfColumns(); i++) {
-			  var range = data.getColumnRange(i);
-			  if ((range.min + range.max) !== 0) {
-				columns.push(i);
-			  }
-			}
-			evolucao = new google.visualization.DataView(data);
-            evolucao.setColumns(columns);
-						
 			var date_formatter = new google.visualization.DateFormat({ 
 				pattern: "dd MMMM yyyy"
 			}); 
@@ -143,32 +146,19 @@
 		
 	options3 = {
 		hAxis:{ minorGridlines:{count:0}},
-		vAxis:{direction: -1, maxValue: 5.5, minVlaue:0.5},
+		vAxis:{direction: -1, viewWindow: {min: 0.5, max: 5.5}},
 		legend: { position: 'top', maxLines: 3 },
 		pointSize: 20,
         pointShape: 'square'
 	}
 	
-	var dashboard = new google.visualization.Dashboard(document.getElementById('evolucao_dash'));
+	var evolucao_chart = new google.visualization.LineChart(document.getElementById('evolucao'));
 
-	evolucaochart = new google.visualization.ChartWrapper({
-		chartType: 'Table',
-        containerId: 'evolucao_graf',
-		options: options3});
-	
-	var timeline = new google.visualization.ControlWrapper({
-          controlType: 'DateRangeFilter',
-          containerId: 'evolucao_filter',
-          options: {
-            filterColumnLabel: 'data'
-          }
-        });
-	dashboard.bind(timeline, evolucaochart);
-	dashboard.draw(evolucao);
+	evolucao_chart.draw(evolucao,options3);
 	}
     </script>
     </head>
-    <body style="background: #99ccff; padding-top: 50px">
+    <body class="bg-image" style="padding-top: 50px">
     <div id="fb-root"></div>
 	<script async defer crossorigin="anonymous" src="https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v7.0" nonce="YJpgm7OP"></script>
 		<nav class="fixed-top navbar navbar-expand-lg navbar-light bg-light">
