@@ -4,9 +4,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta property="og:url"           content="https://luizsouthier.github.io/covid/index.html" />
 	<meta property="og:type"          content="website" />
-	<meta property="og:title"         content="Painel Covid-19" />
-	<meta property="og:description"   content="Consulte informações do seu estado ou município" />
-	<meta property="og:image"         content="https://luizsouthier.github.io/covid/nacional_mun.gif" />
+	<meta property="og:title"         content="Painel Interativo Covid-19" />
+	<meta property="og:description"   content="Consulte informações detalhadas do seu estado e município" />
+	<meta property="og:image"         content="https://luizsouthier.github.io/covid/img/nacional_mun/07 20 2020.png" />
     
     
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
@@ -152,13 +152,13 @@
         pointShape: 'square'
 	}
 	
-	var evolucao_chart = new google.visualization.LineChart(document.getElementById('evolucao'));
+	var evolucao_chart = new google.visualization.LineChart(document.getElementById('evolucao_chart'));
 
 	evolucao_chart.draw(evolucao,options3);
 	}
     </script>
     </head>
-    <body class="bg-image" style="padding-top: 50px">
+    <body style="padding-top: 50px; background: #8095f1;">
     <div id="fb-root"></div>
 	<script async defer crossorigin="anonymous" src="https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v7.0" nonce="YJpgm7OP"></script>
 		<nav class="fixed-top navbar navbar-expand-lg navbar-light bg-light">
@@ -185,7 +185,7 @@
 				  </span>
 				</div>
 		</nav>
-		<div class="row rounded border m-5" style="background: white">
+		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 20px">
 			<div class="row mx-auto my-3"><h5>Evolução da doença - Brasil</h5></div>
 			<div class="row" style="width: 100%;">
 				<div class="col-md">
@@ -193,7 +193,7 @@
 					<img style="max-height: 350px; width: 59%; cursor: pointer" src="nacional_mun.gif"  data-toggle="modal" data-target="#nacional_mun_grande">
 				</div>
 			</div>
-			<div class="modal fade bd-example-modal-lg" id="nacional_grande" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+			<div class="modal fade bd-example-modal-lg shadow-lg" id="nacional_grande" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 			  <div class="modal-dialog modal-lg">
 				<div class="modal-content">
 			  	  <div class="row mx-auto my-3"><h5>Evolução da doença - Brasil</h5></div>
@@ -208,8 +208,8 @@
 				</div>
 			  </div>
 			</div>
-			<div class="modal fade bd-example-modal-lg" id="nacional_mun_grande" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-			  <div class="modal-dialog modal-lg">
+			<div class="modal fade bd-example-modal-lg shadow-lg" id="nacional_mun_grande" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+			  <div class="modal-dialog modal-lg" style="width: 100%">
 				<div class="modal-content">
 			  	  <div class="row mx-auto my-3"><h5>Evolução da doença - Brasil</h5></div>
 				  <img style="width: 100%" src="nacional_mun.gif">
@@ -232,18 +232,15 @@
 				</div>
 			</div>
 		</div>
-		<div class="row rounded border m-5" style="background: white">
+		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 20px">
 			<div class="row mx-auto my-3"><h5>Top 5 estados com maior crescimento de mortes</h5></div>
-			<div id="evolucao_dash" style="width: 100%">
-				<div id="evolucao_graf" style="width: 100%; height: 400px;"></div>
-				<div class="m-auto" id="evolucao_filter" style="width: 600px;background: red"></div>
-			</div>
+			<div id="evolucao_chart" style="width: 100%; height: 400px;"></div>
 			<div class="row mx-auto my-3">
 				<p class="font-weight-light m-5">
 				Fonte: Secretarias Estaduais de Saúde<br>O crescimento de mortes  é calculado comparando a média móvel de mortes do dia em  relação a 14 dias atrás. </p>
 			</div>
 		</div>
-		<div class="row rounded border m-5" style="background: white">
+		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 20px">
 			<div class="row mx-auto my-3"><h5>Mortes - Brasil</h5></div>
 			<div id="nacionalobitos" style="width: 100%; height: 400px;"></div>
 			<div class="row mx-auto my-3">
@@ -251,7 +248,7 @@
 				Fonte: Secretarias Estaduais de Saúde<br>A média móvel é calculada sobre os últimos 7 dias. É utilizada como indicador para atenuar as oscilações da curva causadas pelo represamento de notificações aos fins de semana. </p>
 			</div>
 		</div>
-		<div class="row rounded border m-5" style="background: white">
+		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 20px">
 			<div class="row mx-auto my-3"><h5>Casos - Brasil</h5></div>
 			<div id="nacionalcasos" style="width: 100%; height: 400px;"></div>
 			<div class="row mx-auto my-3">
@@ -259,7 +256,7 @@
 				Fonte: Secretarias Estaduais de Saúde<br>A média móvel é calculada sobre os últimos 7 dias. É utilizada como indicador para atenuar as oscilações da curva causadas pelo represamento de notificações aos fins de semana. </p>
 			</div>
 		</div>
-		<div class="row rounded border m-5" style="background: white">
+		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 20px">
 			<div class="row mx-auto my-3"><h5>Casos e Mortes acumulados - Brasil</h5></div>
 			<div class="row" style="width: 100%;">
 				<div class="col-md">
@@ -273,9 +270,9 @@
 				<p class="font-weight-light m-5">Fonte: Secretarias Estaduais de Saúde</p>
 			</div>
 		</div>
-		<div class="row rounded border m-5" style="background: white" id="sobre">
-			<div class="row mx-auto my-3">
-				<p class="font-weight-light m-5">Site elaborado pelo doutorando <a href="https://luizsouthier.github.io/" target="_blank">Luiz Southier</a></p>
+		<div class="row border m-5" style="background: white; border-radius: 20px" id="sobre">
+			<div class="row mx-auto my-3" align="center">
+				<p class="font-weight-light m-5">Site elaborado pelo doutorando <a href="https://luizsouthier.github.io/" target="_blank">Luiz Southier</a>.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apoio: <a target="_blank" href="https://www.facebook.com/designvisualart"><img src="visualart.jpg" width="100px"></a></p>
 			</div>
 		</div>
 	</body>
