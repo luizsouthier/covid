@@ -8,7 +8,7 @@
 	<meta property="og:description"   content="Consulte informações detalhadas do seu estado e município" />
 	<meta property="og:image"         content="https://luizsouthier.github.io/covid/img/nacional_mun/07 20 2020.png" />
     
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -110,7 +110,7 @@
 	options = {
 		seriesType: 'bars',
 		series: {
-			0: {color: '#3399ff'},
+			0: {color: '#277DA1'},
 			1: {type: 'line', lineWidth: 5, color: 'red'}
 		},
 		hAxis:{ minorGridlines:{count:0}},
@@ -121,7 +121,7 @@
 	
 	options2 = {
 		series: {
-			0: {color: '#3399ff'}
+			0: {color: '#277DA1'}
 		},
 		hAxis:{ minorGridlines:{count:0}},
 		legend: { position: 'bottom', maxLines: 1 },
@@ -149,7 +149,9 @@
 		vAxis:{direction: -1, viewWindow: {min: 0.5, max: 5.5}},
 		legend: { position: 'top', maxLines: 3 },
 		pointSize: 20,
-        pointShape: 'square'
+        pointShape: 'square',
+		colors: ["f94144","f3722c","f8961e","f9844a","f9c74f","90be6d","43aa8b","4d908e","577590","277da1"]
+
 	}
 	
 	var evolucao_chart = new google.visualization.LineChart(document.getElementById('evolucao_chart'));
@@ -158,11 +160,11 @@
 	}
     </script>
     </head>
-    <body style="padding-top: 50px; background: #8095f1;">
+    <body style="padding-top: 50px; background: linear-gradient(to right, #4D908E, #577590, #277DA1);">
     <div id="fb-root"></div>
 	<script async defer crossorigin="anonymous" src="https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v7.0" nonce="YJpgm7OP"></script>
 		<nav class="fixed-top navbar navbar-expand-lg navbar-light bg-light">
-		  <span class="navbar-brand mb-0 h1">Painel Covid-19</span>
+		  <span class="navbar-brand mb-0 h1"><i class="fa fa-heartbeat"></i> Painel Covid-19</span>
 			    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 				</button>
@@ -185,7 +187,7 @@
 				  </span>
 				</div>
 		</nav>
-		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 20px">
+		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 40px">
 			<div class="row mx-auto my-3"><h5>Evolução da doença - Brasil</h5></div>
 			<div class="row" style="width: 100%;">
 				<div class="col-md">
@@ -200,8 +202,8 @@
 				  <img style="width: 100%" src="nacional.gif">
 				  <div class="row mx-auto my-3">
 					   <div>
-						<p class="font-weight-light m-5">As mortes estão <span class="badge" style="background: #99ccff">decaindo</span> se houve redução maior que 15% na média móvel de mortes comparada com 14 dias atrás. As mortes estão <span class="badge" style="background: #ff9999">em crescimento</span> se houve um aumento maior que 15%. Mortes em <span class="badge" style="background: #ffff66">estabilidade</span> representa variações menores que 15%.<br><br>
-			            A escala do número de <span class="badge" style="background: #F57622">casos</span> é logarítmica.<br><br>
+						<p class="font-weight-light m-5">As mortes estão <span class="badge" style="color: white; background: #F9C74F">decaindo</span> se houve redução maior que 15% na média móvel de mortes comparada com 14 dias atrás. As mortes estão <span class="badge" style="color: white; background: #F94144">em crescimento</span> se houve um aumento maior que 15%. Mortes em <span class="badge" style="color: white; background: #F8961E">estabilidade</span> representa variações menores que 15%.<br><br>
+			            A escala do número de <span class="badge" style="color: white; background: linear-gradient(to right, #482173,#2E6F8E,#29AF7F,#BDDF26)">casos</span> é logarítmica.<br><br>
 				        Fonte: Secretarias Estaduais de Saúde. </p> 
 					   </div>
 					</div>
@@ -209,14 +211,14 @@
 			  </div>
 			</div>
 			<div class="modal fade bd-example-modal-lg shadow-lg" id="nacional_mun_grande" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-			  <div class="modal-dialog modal-lg" style="width: 100%">
+			  <div class="modal-dialog mw-100 w-75" style="width: 100%">
 				<div class="modal-content">
 			  	  <div class="row mx-auto my-3"><h5>Evolução da doença - Brasil</h5></div>
 				  <img style="width: 100%" src="nacional_mun.gif">
 				  <div class="row mx-auto my-3">
 					   <div>
-						<p class="font-weight-light m-5">As mortes estão <span class="badge" style="background: #99ccff">decaindo</span> se houve redução maior que 15% na média móvel de mortes comparada com 14 dias atrás. As mortes estão <span class="badge" style="background: #ff9999">em crescimento</span> se houve um aumento maior que 15%. Mortes em <span class="badge" style="background: #ffff66">estabilidade</span> representa variações menores que 15%.<br><br>
-			            A escala do número de <span class="badge" style="background: #F57622">casos</span> é logarítmica.<br><br>
+						<p class="font-weight-light m-5">As mortes estão <span class="badge" style="color: white; background: #F9C74F">decaindo</span> se houve redução maior que 15% na média móvel de mortes comparada com 14 dias atrás. As mortes estão <span class="badge" style="color: white; background: #F94144">em crescimento</span> se houve um aumento maior que 15%. Mortes em <span class="badge" style="color: white; background: #F8961E">estabilidade</span> representa variações menores que 15%.<br><br>
+			            A escala do número de <span class="badge" style="color: white; background: linear-gradient(to right, #482173,#2E6F8E,#29AF7F,#BDDF26)">casos</span> é logarítmica.<br><br>
 				        Fonte: Secretarias Estaduais de Saúde. </p> 
 					   </div>
 					</div>
@@ -225,14 +227,14 @@
 			</div>
 			<div class="row mx-auto">
 				<div align="center">
-				<p class="font-weight-light m-5"><span class="badge" style="background: #F57622">Casos</span>
-				<span class="badge" style="background: #ff9999">Mortes em crescimento</span>
-				<span class="badge" style="background: #ffff66">Mortes em estabilidade</span>
-				<span class="badge" style="background: #99ccff">Mortes decaindo</span><br><br>Clique sobre os gráficos para mais informações</p>
+				<p class="font-weight-light m-5"><span class="badge" style="color: white; background: linear-gradient(to right, #482173,#2E6F8E,#29AF7F,#BDDF26)">Casos</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<span class="badge" style="color: white; background: #F94144">Mortes em crescimento</span>
+				<span class="badge" style="color: white; background: #F8961E">Mortes em estabilidade</span>
+				<span class="badge" style="color: white; background: #F9C74F">Mortes decaindo</span><br><br>Clique sobre os gráficos para mais informações</p>
 				</div>
 			</div>
 		</div>
-		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 20px">
+		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 40px">
 			<div class="row mx-auto my-3"><h5>Top 5 estados com maior crescimento de mortes</h5></div>
 			<div id="evolucao_chart" style="width: 100%; height: 400px;"></div>
 			<div class="row mx-auto my-3">
@@ -240,7 +242,7 @@
 				Fonte: Secretarias Estaduais de Saúde<br>O crescimento de mortes  é calculado comparando a média móvel de mortes do dia em  relação a 14 dias atrás. </p>
 			</div>
 		</div>
-		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 20px">
+		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 40px">
 			<div class="row mx-auto my-3"><h5>Mortes - Brasil</h5></div>
 			<div id="nacionalobitos" style="width: 100%; height: 400px;"></div>
 			<div class="row mx-auto my-3">
@@ -248,7 +250,7 @@
 				Fonte: Secretarias Estaduais de Saúde<br>A média móvel é calculada sobre os últimos 7 dias. É utilizada como indicador para atenuar as oscilações da curva causadas pelo represamento de notificações aos fins de semana. </p>
 			</div>
 		</div>
-		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 20px">
+		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 40px">
 			<div class="row mx-auto my-3"><h5>Casos - Brasil</h5></div>
 			<div id="nacionalcasos" style="width: 100%; height: 400px;"></div>
 			<div class="row mx-auto my-3">
@@ -256,7 +258,7 @@
 				Fonte: Secretarias Estaduais de Saúde<br>A média móvel é calculada sobre os últimos 7 dias. É utilizada como indicador para atenuar as oscilações da curva causadas pelo represamento de notificações aos fins de semana. </p>
 			</div>
 		</div>
-		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 20px">
+		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 40px">
 			<div class="row mx-auto my-3"><h5>Casos e Mortes acumulados - Brasil</h5></div>
 			<div class="row" style="width: 100%;">
 				<div class="col-md">
@@ -270,9 +272,9 @@
 				<p class="font-weight-light m-5">Fonte: Secretarias Estaduais de Saúde</p>
 			</div>
 		</div>
-		<div class="row border m-5" style="background: white; border-radius: 20px" id="sobre">
+		<div class="row border m-5" style="background: white; border-radius: 40px" id="sobre">
 			<div class="row mx-auto my-3" align="center">
-				<p class="font-weight-light m-5">Site elaborado pelo doutorando <a href="https://luizsouthier.github.io/" target="_blank">Luiz Southier</a>.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apoio: <a target="_blank" href="https://www.facebook.com/designvisualart"><img src="visualart.jpg" width="100px"></a></p>
+				<p class="font-weight-light m-5">Site elaborado pelo doutorando <a href="https://luizsouthier.github.io/" target="_blank">Luiz Southier</a>.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apoio: <a target="_blank" href="https://www.instagram.com/visualartdigital/"><img src="logo.png" width="100px"></a></p>
 			</div>
 		</div>
 	</body>
