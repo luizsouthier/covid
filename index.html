@@ -2,12 +2,35 @@
 <html>
     <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta property="og:url"           content="https://luizsouthier.github.io/covid/index.html" />
+	<meta property="og:type"          content="website" />
+	<meta property="og:title"         content="Painel Covid-19" />
+	<meta property="og:description"   content="Consulte informações do seu estado ou município" />
+	<meta property="og:image"         content="https://luizsouthier.github.io/covid/nacional_mun.gif" />
+    
+    
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="jquery.csv.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script>window.twttr = (function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0],
+		t = window.twttr || {};
+	  if (d.getElementById(id)) return t;
+	  js = d.createElement(s);
+	  js.id = id;
+	  js.src = "https://platform.twitter.com/widgets.js";
+	  fjs.parentNode.insertBefore(js, fjs);
+
+	  t._e = [];
+	  t.ready = function(f) {
+		t._e.push(f);
+	  };
+
+	  return t;
+	}(document, "script", "twitter-wjs"));</script>
     <script type="text/javascript">
 	google.charts.load('current', {'packages': ['corechart', 'controls'],'language': 'pt-br'});
 	google.charts.setOnLoadCallback(carrega);
@@ -146,6 +169,8 @@
     </script>
     </head>
     <body style="background: #99ccff; padding-top: 50px">
+    <div id="fb-root"></div>
+	<script async defer crossorigin="anonymous" src="https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v7.0" nonce="YJpgm7OP"></script>
 		<nav class="fixed-top navbar navbar-expand-lg navbar-light bg-light">
 		  <span class="navbar-brand mb-0 h1">Painel Covid-19</span>
 			    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -161,27 +186,59 @@
 				  </li>
 				</ul>
 				<span class="navbar-text">
-				  <a class="nav-link" href="sobre.html">Sobre</a>
+				  <a class="nav-link scrooldown" style="cursor: pointer" href="#sobre">Sobre</a>
 				</span>
+					<div class="fb-share-button navbar-text" data-href="https://luizsouthier.github.io/covid/" data-layout="button" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fluizsouthier.github.io%2Fcovid%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Compartilhar</a></div>
+					<span class="navbar-text" style="margin: 0 0 -5px 5px"><a class="twitter-share-button"
+				  href="https://twitter.com/intent/tweet?text=Consulte informações detalhadas do seu estado ou município sobre Covid-19"
+				  data-size="large">Tweet</a>
+				  </span>
 				</div>
 		</nav>
 		<div class="row rounded border m-5" style="background: white">
 			<div class="row mx-auto my-3"><h5>Evolução da doença - Brasil</h5></div>
 			<div class="row" style="width: 100%;">
 				<div class="col-md">
-					<img style="max-height: 350px; width: 100%" src="nacional.gif">
-				</div>
-				<div class="col-md">
-					<img style="max-height: 350px; width: 100%" src="nacional_mun.gif">
+					<img style="max-height: 350px; width: 39%; cursor: pointer" src="nacional.gif"  data-toggle="modal" data-target="#nacional_grande">
+					<img style="max-height: 350px; width: 59%; cursor: pointer" src="nacional_mun.gif"  data-toggle="modal" data-target="#nacional_mun_grande">
 				</div>
 			</div>
-			<div class="row mx-auto my-3">
-				<div>
-				<span class="badge" style="background: #F57622">Casos</span>
+			<div class="modal fade bd-example-modal-lg" id="nacional_grande" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+			  <div class="modal-dialog modal-lg">
+				<div class="modal-content">
+			  	  <div class="row mx-auto my-3"><h5>Evolução da doença - Brasil</h5></div>
+				  <img style="width: 100%" src="nacional.gif">
+				  <div class="row mx-auto my-3">
+					   <div>
+						<p class="font-weight-light m-5">As mortes estão <span class="badge" style="background: #99ccff">decaindo</span> se houve redução maior que 15% na média móvel de mortes comparada com 14 dias atrás. As mortes estão <span class="badge" style="background: #ff9999">em crescimento</span> se houve um aumento maior que 15%. Mortes em <span class="badge" style="background: #ffff66">estabilidade</span> representa variações menores que 15%.<br><br>
+			            A escala do número de <span class="badge" style="background: #F57622">casos</span> é logarítmica.<br><br>
+				        Fonte: Secretarias Estaduais de Saúde. </p> 
+					   </div>
+					</div>
+				</div>
+			  </div>
+			</div>
+			<div class="modal fade bd-example-modal-lg" id="nacional_mun_grande" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+			  <div class="modal-dialog modal-lg">
+				<div class="modal-content">
+			  	  <div class="row mx-auto my-3"><h5>Evolução da doença - Brasil</h5></div>
+				  <img style="width: 100%" src="nacional_mun.gif">
+				  <div class="row mx-auto my-3">
+					   <div>
+						<p class="font-weight-light m-5">As mortes estão <span class="badge" style="background: #99ccff">decaindo</span> se houve redução maior que 15% na média móvel de mortes comparada com 14 dias atrás. As mortes estão <span class="badge" style="background: #ff9999">em crescimento</span> se houve um aumento maior que 15%. Mortes em <span class="badge" style="background: #ffff66">estabilidade</span> representa variações menores que 15%.<br><br>
+			            A escala do número de <span class="badge" style="background: #F57622">casos</span> é logarítmica.<br><br>
+				        Fonte: Secretarias Estaduais de Saúde. </p> 
+					   </div>
+					</div>
+				</div>
+			  </div>
+			</div>
+			<div class="row mx-auto">
+				<div align="center">
+				<p class="font-weight-light m-5"><span class="badge" style="background: #F57622">Casos</span>
 				<span class="badge" style="background: #ff9999">Mortes em crescimento</span>
 				<span class="badge" style="background: #ffff66">Mortes em estabilidade</span>
-				<span class="badge" style="background: #99ccff">Mortes decaindo</span>
-				<p class="font-weight-light m-5">Fonte: Secretarias Estaduais de Saúde</p>
+				<span class="badge" style="background: #99ccff">Mortes decaindo</span><br><br>Clique sobre os gráficos para mais informações</p>
 				</div>
 			</div>
 		</div>
@@ -224,6 +281,11 @@
 			</div>
 			<div class="row mx-auto my-3">
 				<p class="font-weight-light m-5">Fonte: Secretarias Estaduais de Saúde</p>
+			</div>
+		</div>
+		<div class="row rounded border m-5" style="background: white" id="sobre">
+			<div class="row mx-auto my-3">
+				<p class="font-weight-light m-5">Site elaborado pelo doutorando <a href="https://luizsouthier.github.io/" target="_blank">Luiz Southier</a></p>
 			</div>
 		</div>
 	</body>
