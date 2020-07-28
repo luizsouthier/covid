@@ -6,8 +6,8 @@
 	<meta property="og:type"          content="website" />
 	<meta property="og:title"         content="Painel Interativo Covid-19" />
 	<meta property="og:description"   content="Consulte informações detalhadas do seu estado e município" />
-	<meta property="og:image"         content="https://luizsouthier.github.io/covid/img/nacional_mun/07 20 2020.png" />
-    
+	<meta property="og:image"         content="https://luizsouthier.github.io/covid/post.png" />
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.png"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -15,21 +15,6 @@
     <script type="text/javascript" src="jquery.csv.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <style>
-		.bg-image {
-
-		  background-image: url("fundo.jpg");
-
-		  #filter: blur(8px);
-		  #-webkit-filter: blur(8px);
-
-		  height: 100%;
-
-		  background-position: center;
-		  background-repeat: no-repeat;
-		  background-size: cover;
-		}
-	</style>
     <script>window.twttr = (function(d, s, id) {
 	  var js, fjs = d.getElementsByTagName(s)[0],
 		t = window.twttr || {};
@@ -47,6 +32,9 @@
 	  return t;
 	}(document, "script", "twitter-wjs"));</script>
     <script type="text/javascript">
+		
+	var key = '28 07 2020';
+		
 	google.charts.load('current', {'packages': ['corechart', 'controls'],'language': 'pt-br'});
 	google.charts.setOnLoadCallback(carrega);
 
@@ -58,7 +46,7 @@
 	var numeros;
 	var estado_atual = new Array()
 	function carrega(){
-		$.get("dados/nacional.csv", function(csvString) {
+		$.get("dados/"+key+"nacional.csv", function(csvString) {
 			var arrayData = $.csv.toArrays(csvString, {onParseValue: $.csv.hooks.castToScalar});
 			numeros = arrayData[arrayData.length - 1]
 		
@@ -93,12 +81,12 @@
 			
 		});
 		
-		$.get("dados/estadual.csv", function(csvString) {
+		$.get("dados/"+key+"estadual.csv", function(csvString) {
 			var arrayData = $.csv.toArrays(csvString, {onParseValue: $.csv.hooks.castToScalar});
 			ultimo = arrayData[arrayData.length - 1]
 			
 			for(var j=1; j<arrayData.length; j++){
-			  if (arrayData[j][4]== ultimo[4]){
+			  if (arrayData[j][1]== ultimo[1]){
 				  estado_atual.push(arrayData[j])
 			  }
 			}
@@ -106,7 +94,7 @@
 			set_info2()
 		});
 		
-		$.get("dados/evolucao.csv", function(csvString) {
+		$.get("dados/"+key+"evolucao.csv", function(csvString) {
 			var arrayData = $.csv.toArrays(csvString, {onParseValue: $.csv.hooks.castToScalar});
 			
 			for(var j=1; j<arrayData.length; j++){
@@ -179,22 +167,22 @@
 		
 	function set_info(){
 		console.log(numeros)
-		document.getElementById("casosA").innerHTML = numeros[1].toFixed(0)
-		document.getElementById("casos").innerHTML = numeros[2].toFixed(0)
-		document.getElementById("casosM").innerHTML = numeros[5].toFixed(0)
-		document.getElementById("mortesA").innerHTML = numeros[3].toFixed(0)
-		document.getElementById("mortes").innerHTML = numeros[4].toFixed(0)
-		document.getElementById("mortesM").innerHTML = numeros[6].toFixed(0)
+		document.getElementById("casosA").innerHTML = numeros[1].toLocaleString(undefined, {maximumFractionDigits:0})
+		document.getElementById("casos").innerHTML = numeros[2].toLocaleString(undefined, {maximumFractionDigits:0})
+		document.getElementById("casosM").innerHTML = numeros[5].toLocaleString(undefined, {maximumFractionDigits:0})
+		document.getElementById("mortesA").innerHTML = numeros[3].toLocaleString(undefined, {maximumFractionDigits:0})
+		document.getElementById("mortes").innerHTML = numeros[4].toLocaleString(undefined, {maximumFractionDigits:0})
+		document.getElementById("mortesM").innerHTML = numeros[6].toLocaleString(undefined, {maximumFractionDigits:0})
 		
 		console.log(numeros[7])
 		if(numeros[7]>0.15){
-			p='<span class="badge" style="color: white; background: #F94144">Mortes em crescimento - '+((100*numeros[7]).toFixed(0))+'%</span>'
+			p='<span class="badge" style="color: white; background: #F94144">Mortes em crescimento ('+((100*numeros[7]).toFixed(0))+'%)</span>'
 		}
 		else if(numeros[7]<-0.15){
-			p='<span class="badge" style="color: white; background: #F9C74F">Mortes decaindo - '+((100*numeros[7]).toFixed(0))+'% mortes por dia</span>'
+			p='<span class="badge" style="color: white; background: #F9C74F">Mortes decaindo ('+((100*numeros[7]).toFixed(0))+'%)</span>'
 		}
 		else{
-			p='<span class="badge" style="color: white; background: #F8961E">Mortes em estabilidade - '+numeros[6].toFixed(0)+' mortes por dia</span>'
+			p='<span class="badge" style="color: white; background: #F8961E">Mortes em estabilidade ('+numeros[6].toFixed(0)+' mortes por dia)</span>'
 		}
 		
 		document.getElementById("parecer").innerHTML = p
@@ -206,20 +194,32 @@
 		var e=''
 				
 		for(var i=0;i<estado_atual.length;i++){
-			s = '<button type="button" class="btn" style="background: #277DA1; color: white; margin: 5px">'+estado_atual[i][0]+' <span class="badge  badge-light">'+((100*estado_atual[i][11]).toFixed(0))+'%</span></button>';
-			if(estado_atual[i][11]>0.15){
-				c+=s;
+			
+			if(estado_atual[i][0]!='DF'){
+				link = 'onclick="window.location=\'estado.html?state='+estado_atual[i][0]+'\'"'
+			}else{
+				link = 'onclick="window.location=\'municipio.html?state=DF&muni=Brasília\'"'
 			}
-			else if(estado_atual[i][11]<-0.15){
-				d+=s;
+			
+			if(estado_atual[i][8]>0.15){
+				c+='<button type="button" '+link+' class="btn" style="background: white; color: black; margin: 5px">'+estado_atual[i][0]+' <span class="badge" style="background: #e6e6e6">'+((100*estado_atual[i][8]).toFixed(0))+'%</span></button>';
+			}
+			else if(estado_atual[i][8]=='inf'){
+				c+='<button type="button" '+link+' class="btn" style="background: white; color: black; margin: 5px">'+estado_atual[i][0]+' <span class="badge" style="background: #e6e6e6">500+%</span></button>';
+			}
+			else if(estado_atual[i][8]<-0.15){
+				d+='<button type="button" '+link+' class="btn" style="background: white; color: black; margin: 5px">'+estado_atual[i][0]+' <span class="badge" style="background: #e6e6e6">'+((100*estado_atual[i][8]).toFixed(0))+'%</span></button>';
+			}
+			else if(estado_atual[i][8]=='-inf'){
+				d+='<button type="button" '+link+' class="btn" style="background: white; color: black; margin: 5px">'+estado_atual[i][0]+' <span class="badge" style="background: #e6e6e6">-500%</span></button>';
 			}
 			else{
-				e+=s;
+				e+='<button type="button" '+link+' class="btn" style="background: white; color: black; margin: 5px">'+estado_atual[i][0]+' <span class="badge" style="background: #e6e6e6">'+((100*estado_atual[i][8]).toFixed(0))+'%</span></button>';
 			}
 			
 		}
 		
-		dia = estado_atual[0][4].split("-")
+		dia = estado_atual[0][1].split("-")
 		document.getElementById("atual_imagem").src="img/nacional/"+dia[1]+" "+dia[2]+" "+dia[0]+".png"
 		
 		document.getElementById("crescimento").innerHTML = c
@@ -243,7 +243,10 @@
 					<a class="nav-link" href="index.html">Análise nacional</a>
 				  </li>
 				  <li class="nav-item">
-					<a class="nav-link" href="estado.html">Análise por estado/município</a>
+					<a class="nav-link" href="estado.html">Análise por estado</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="municipio.html">Análise por município</a>
 				  </li>
 				</ul>
 				<span class="navbar-text">
@@ -286,18 +289,22 @@
 			<div class="row mx-auto my-3"><h4>Evolução da doença - Brasil</h4></div>
 			<div class="row" style="width: 100%;">
 				<div class="col-md">
-					<img style="max-height: 350px; width: 39%; cursor: pointer" src="nacional.gif"  data-toggle="modal" data-target="#nacional_grande">
-					<img style="max-height: 350px; width: 59%; cursor: pointer" src="nacional_mun.gif"  data-toggle="modal" data-target="#nacional_mun_grande">
+					<img style="max-height: 350px; width: 39%; cursor: pointer" id="mapa1"  data-toggle="modal" data-target="#nacional_grande">
+					<img style="max-height: 350px; width: 59%; cursor: pointer"  id="mapa2"  data-toggle="modal" data-target="#nacional_mun_grande">
+					<script > document.getElementById("mapa1").src="nacional"+key+".gif"</script>
+					<script > document.getElementById("mapa2").src="nacional_mun"+key+".gif"</script>
+
 				</div>
 			</div>
 			<div class="modal fade bd-example-modal-lg shadow-lg" id="nacional_grande" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 			  <div class="modal-dialog modal-lg">
 				<div class="modal-content">
 			  	  <div class="row mx-auto my-3"><h4>Evolução da doença - Brasil</h4></div>
-				  <img style="width: 100%" src="nacional.gif">
+				  <img style="width: 100%"  id="main_gif">
+				  <script > document.getElementById("main_gif").src="nacional"+key+".gif"</script>
 				  <div class="row mx-auto my-3">
 					   <div>
-						<p class="font-weight-light m-5">O mapa à esquerda mostra a evolução do número de <span class="badge" style="color: white; background: linear-gradient(to left, #482173,#2E6F8E,#29AF7F,#BDDF26)">casos</span> pelos estados brasileiros. Quanto mais escuro, maior é o número de casos (em escala logarítmica).<br><br>O gráfico à direita mostra a evolução do número de mortes. As mortes estão <span class="badge" style="color: white; background: #F9C74F">decaindo</span> se houve redução maior que 15% na média móvel de mortes comparada com 14 dias atrás. As mortes estão <span class="badge" style="color: white; background: #F94144">em crescimento</span> se houve um aumento maior que 15%. Mortes em <span class="badge" style="color: white; background: #F8961E">estabilidade</span> representa variações menores que 15%.<br><br>
+						<p class="font-weight-light m-5">O mapa à esquerda mostra a evolução do número de <span class="badge" style="color: white; background: linear-gradient(to left, #482173,#2E6F8E,#29AF7F,#BDDF26)">casos</span> pelos estados brasileiros. Quanto mais escuro, maior é o número de casos (em escala logarítmica).<br><br>O gráfico à direita mostra a evolução do número de mortes. As mortes estão <span class="badge" style="color: white; background: #F9C74F">decaindo</span> se houve redução maior que 15% na média móvel de mortes comparada com 14 dias atrás. As mortes estão <span class="badge" style="color: white; background: #F94144">em crescimento</span> se houve um aumento maior que 15%. Mortes em <span class="badge" style="color: white; background: #F8961E">estabilidade</span> representa variações menores que 15%. <br><br>
 						Fonte: Secretarias Estaduais de Saúde. </p> 
 					   </div>
 					</div>
@@ -308,10 +315,11 @@
 			  <div class="modal-dialog mw-100 w-75" style="width: 100%">
 				<div class="modal-content">
 			  	  <div class="row mx-auto my-3"><h4>Evolução da doença - Brasil</h4></div>
-				  <img style="width: 100%" src="nacional_mun.gif">
+				  <img style="width: 100%" id="main_gif2">
+				  <script > document.getElementById("main_gif2").src="nacional_mun"+key+".gif"</script>
 				  <div class="row mx-auto my-3">
 					   <div>
-						<p class="font-weight-light m-5">Os mapas à esquerda e ao centro mostram a evolução do número de <span class="badge" style="color: white; background: linear-gradient(to left, #482173,#2E6F8E,#29AF7F,#BDDF26)">casos</span> pelos municípios brasileiros (por localização e por área). Quanto mais escuro, maior é o número de casos (em escala logarítmica).<br><br>O gráfico à direita mostra a evolução do número de mortes. As mortes estão <span class="badge" style="color: white; background: #F9C74F">decaindo</span> se houve redução maior que 15% na média móvel de mortes comparada com 14 dias atrás. As mortes estão <span class="badge" style="color: white; background: #F94144">em crescimento</span> se houve um aumento maior que 15%. Mortes em <span class="badge" style="color: white; background: #F8961E">estabilidade</span> representa variações menores que 15%.<br><br>
+						<p class="font-weight-light m-5">Os mapas à esquerda e ao centro mostram a evolução do número de <span class="badge" style="color: white; background: linear-gradient(to left, #482173,#2E6F8E,#29AF7F,#BDDF26)">casos</span> pelos municípios brasileiros (por localização e por área). Quanto mais escuro, maior é o número de casos (em escala logarítmica).<br><br>O gráfico à direita mostra a evolução do número de mortes. As mortes estão <span class="badge" style="color: white; background: #F9C74F">decaindo</span> se houve redução maior que 15% na média móvel de mortes comparada com 14 dias atrás. As mortes estão <span class="badge" style="color: white; background: #F94144">em crescimento</span> se houve um aumento maior que 15%. Mortes em <span class="badge" style="color: white; background: #F8961E">estabilidade</span> representa variações menores que 15%. <br><br>
 						Fonte: Secretarias Estaduais de Saúde. </p> 
 					   </div>
 					</div>
@@ -323,7 +331,8 @@
 				<p class="font-weight-light m-5"><span class="badge" style="color: white; background: linear-gradient(to left, #482173,#2E6F8E,#29AF7F,#BDDF26)">Casos</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<span class="badge" style="color: white; background: #F94144">Mortes em crescimento</span>
 				<span class="badge" style="color: white; background: #F8961E">Mortes em estabilidade</span>
-				<span class="badge" style="color: white; background: #F9C74F">Mortes decaindo</span><br><br>Clique sobre os gráficos para mais informações</p>
+				<span class="badge" style="color: white; background: #F9C74F">Mortes decaindo</span>
+				<br><br>Clique sobre os gráficos para mais informações</p>
 				</div>
 			</div>
 		</div>
@@ -335,22 +344,23 @@
 				</div>
 				<div class="col-md">
 
-						<div class="row" style="margin:10px; background: linear-gradient(to left, #F94144,white)">
-						  <div class="row" style="padding: 10px"><span class="badge" style="color: white; background: #F94144">Mortes em crescimento</span></div>
-						  <div class="row" style="padding: 10px" id="crescimento"></div>
+						<div  style="margin:10px; background: #F94144; border-radius: 10px">
+						  <div  style="padding: 10px; width: 100%; "><span class="badge" style="color: white; background: #F94144">Mortes em crescimento</span></div>
+						  <div  style="padding: 10px; width: 100%; " id="crescimento"></div>
 						</div>
-						<div class="row" style="margin:10px; background: linear-gradient(to left, #F8961E,white)">
-						  <div class="row" style="padding: 10px"><span class="badge" style="color: white; background: #F8961E">Mortes em estabilidade</span></div>
-						  <div class="row" style="padding: 10px" id="estabilidade"></div>
+						<div  style="margin:10px; background: #F8961E; border-radius: 10px">
+						  <div  style="padding: 10px; width: 100%;"><span class="badge" style="color: white; background: #F8961E">Mortes em estabilidade</span></div>
+						  <div  style="padding: 10px; width: 100%;" id="estabilidade"></div>
 						</div>
-						<div class="row" style="margin:10px; background: linear-gradient(to left, #F9C74F,white)">
-						  <div class="row" style="padding: 10px"><span class="badge" style="color: white; background: #F9C74F">Mortes decaindo</span></div>
-						  <div class="row" style="padding: 10px" id="declinio"></div>
+						<div style="margin:10px; background: #F9C74F; border-radius: 10px">
+						  <div  style="padding: 10px; width: 100%;"><span class="badge" style="color: white; background: #F9C74F">Mortes decaindo</span></div>
+						  <div  style="padding: 10px; width: 100%;" id="declinio"></div>
 						</div>
 				</div>
 			</div>
 			<div class="row mx-auto my-3">
 				<p class="font-weight-light m-5">
+				Clique sobre a sigla do estado para análise estadual<br><br>
 				As mortes estão <span class="badge" style="color: white; background: #F9C74F">decaindo</span> se houve redução maior que 15% na média móvel de mortes comparada com 14 dias atrás. As mortes estão <span class="badge" style="color: white; background: #F94144">em crescimento</span> se houve um aumento maior que 15%. Mortes em <span class="badge" style="color: white; background: #F8961E">estabilidade</span> representa variações menores que 15%.<br><br>
 				Fonte: Secretarias Estaduais de Saúde. </p>
 			</div>
@@ -395,7 +405,7 @@
 		</div>
 		<div class="row border m-5" style="background: white; border-radius: 40px" id="sobre">
 			<div class="row mx-auto my-3" align="center">
-				<p class="font-weight-light m-5">Site elaborado pelo doutorando <a href="https://luizsouthier.github.io/" target="_blank">Luiz Southier</a>.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apoio: <a target="_blank" href="https://www.instagram.com/visualartdigital/"><img src="logo.png" width="100px"></a></p>
+				<p class="font-weight-light m-5">Site elaborado pelo doutorando <a href="https://luizsouthier.github.io/" target="_blank">Luiz Southier</a>.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Design por <a target="_blank" href="https://www.instagram.com/visualartdigital/"><img src="logo.png" width="100px"></a></p>
 			</div>
 		</div>
 	</body>
