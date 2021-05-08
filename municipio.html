@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta property="og:url"           content="https://luizsouthier.github.io/covid/index.html" />
+	<meta property="og:type"          content="website" />
+	<meta property="og:title"         content="Painel Interativo Covid-19" />
+	<meta property="og:description"   content="Consulte informações detalhadas do seu estado e município" />
+	<meta property="og:image"         content="https://luizsouthier.github.io/covid/post.png" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.png"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="jquery.csv.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script>
+	  	Array.prototype.contains = function(v) {
+		  for (var i = 0; i < this.length; i++) {
+			if (this[i] === v) return true;
+		  }
+		  return false;
+		};
+
+		Array.prototype.unique = function() {
+		  var arr = [];
+		  for (var i = 0; i < this.length; i++) {
+			if (!arr.contains(this[i])) {
+			  arr.push(this[i]);
+			}
+		  }
+		  return arr;
+		}
+	
+	  window.twttr = (function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0],
+		t = window.twttr || {};
+	  if (d.getElementById(id)) return t;
+	  js = d.createElement(s);
+	  js.id = id;
+	  js.src = "https://platform.twitter.com/widgets.js";
+	  fjs.parentNode.insertBefore(js, fjs);
+
+	  t._e = [];
+	  t.ready = function(f) {
+		t._e.push(f);
+	  };
+
+	  return t;
+	}(document, "script", "twitter-wjs"));</script>
+    <script type="text/javascript">
+	
+	var key = '2021 01 05';
+		
+	google.charts.load('current', {'packages': ['corechart', 'controls'],'language': 'pt-br'});
+	google.charts.setOnLoadCallback(carrega);
+	
+	const urlParams = new URLSearchParams(window.location.search);
+	var estado;
+	if(urlParams.has('muni')&urlParams.has('state')){
+		estado = urlParams.get('state')
+		municipio = urlParams.get('muni')
+	}else{
+		estado = 'PR'
+		municipio = 'Curitiba'
+	}
+		
+	var nacionalcasos;
+	var nacionalobitos;
+	var nacionalcasosA;
+	var nacionalobitosA;
+	var evolucao;
+	var numeros = new Array();
+	var estado_atual = new Array();
+	var lista_estados = new Array();
+	function carrega(){
+		$.get("dados/"+key+""+estado+".csv", function(csvString) {
+			var arrayData = $.csv.toArrays(csvString, {onParseValue: $.csv.hooks.castToScalar});
+			
+			for(var j=1; j<arrayData.length; j++){
+			  arrayData[j][1]= new Date(arrayData[j][1])
+		      lista_estados.push(arrayData[j][0])
+			}
+			lista_estados = lista_estados.unique()
+			lista_estados = lista_estados.sort()
+			s =''
+			for(var j=0;j<lista_estados.length; j++){
+				s+='<option>'+lista_estados[j]+'</option>'
+			}
+			document.getElementById('sel_estado').innerHTML=s;
+			document.getElementById('sel_estado').value=municipio;
+			
+			nacional = new google.visualization.arrayToDataTable(arrayData);
+			nacional.setColumnLabel(1,'Data')
+			nacional.setColumnLabel(2,'Casos Acumulados')
+			nacional.setColumnLabel(3,'Casos')
+			nacional.setColumnLabel(4,'Mortes Acumuladas')
+			nacional.setColumnLabel(5,'Mortes')
+			nacional.setColumnLabel(6,'Média móvel de casos')
+			nacional.setColumnLabel(7,'Média móvel de mortes')
+			
+			nacionalcasos = new google.visualization.DataView(nacional);
+			nacionalcasos.setRows(nacionalcasos.getFilteredRows([{column: 0, value: municipio}]))
+			
+			var i;
+			for (i = 0; i < nacionalcasos.getNumberOfColumns(); i++) {
+			  numeros.push(nacionalcasos.getValue(nacionalcasos.getNumberOfRows() - 1, i));
+			}		
+			
+			nacionalcasos.setColumns([1,3,6])
+			nacionalobitos = new google.visualization.DataView(nacional);
+			nacionalobitos.setRows(nacionalobitos.getFilteredRows([{column: 0, value: municipio}]))
+			nacionalobitos.setColumns([1,5,7])
+			nacionalcasosA = new google.visualization.DataView(nacional);
+			nacionalcasosA.setRows(nacionalcasosA.getFilteredRows([{column: 0, value: municipio}]))
+			nacionalcasosA.setColumns([1,2])
+			nacionalobitosA = new google.visualization.DataView(nacional);
+			nacionalobitosA.setRows(nacionalobitosA.getFilteredRows([{column: 0, value: municipio}]))
+			nacionalobitosA.setColumns([1,4])
+			
+			var date_formatter = new google.visualization.DateFormat({ 
+				pattern: "dd MMMM yyyy"
+			}); 
+			date_formatter.format(nacional,1);
+			
+			
+			google.charts.setOnLoadCallback(graficonacional);
+			google.charts.setOnLoadCallback(set_info);
+			
+		});
+	}
+
+	function graficonacional(){
+
+	options = {
+		seriesType: 'bars',
+		series: {
+			0: {color: '#277DA1'},
+			1: {type: 'line', lineWidth: 5, color: 'red'}
+		},
+		hAxis:{ minorGridlines:{count:0}},
+		legend: { position: 'bottom', maxLines: 1 },
+        bar: { groupWidth: '90%' },
+		chartArea:{left:'12%',top:10,width:'80%',height:350}
+	};
+	
+	options2 = {
+		series: {
+			0: {color: '#277DA1'}
+		},
+		hAxis:{ minorGridlines:{count:0}},
+		legend: { position: 'bottom', maxLines: 1 },
+        bar: { groupWidth: '90%' },
+		vAxis: {
+             scaleType: 'log',
+        },
+		legend: { position: 'bottom', maxLines: 1 },
+		chartArea:{left:'12%',top:10,width:'80%',height:350}
+	};
+		
+	nacionalcasoschart = new google.visualization.ComboChart(document.getElementById('nacionalcasos'));
+	nacionalcasoschart.draw(nacionalcasos,options);
+	nacionalobitoschart = new google.visualization.ComboChart(document.getElementById('nacionalobitos'));
+	nacionalobitoschart.draw(nacionalobitos,options);
+	nacionalcasosAchart = new google.visualization.AreaChart(document.getElementById('nacionalcasosA'));
+	nacionalcasosAchart.draw(nacionalcasosA,options2);
+	nacionalobitosAchart = new google.visualization.AreaChart(document.getElementById('nacionalobitosA'));
+	nacionalobitosAchart.draw(nacionalobitosA,options2);
+	}
+		
+	function set_info(){
+		
+		document.getElementById("casosA").innerHTML = Math.ceil(numeros[2]).toLocaleString(undefined, {maximumFractionDigits:0})
+		document.getElementById("casos").innerHTML = Math.ceil(numeros[3]).toLocaleString(undefined, {maximumFractionDigits:0})
+		document.getElementById("casosM").innerHTML = Math.ceil(numeros[6]).toLocaleString(undefined, {maximumFractionDigits:0})
+		document.getElementById("mortesA").innerHTML = Math.ceil(numeros[4]).toLocaleString(undefined, {maximumFractionDigits:0})
+		document.getElementById("mortes").innerHTML = Math.ceil(numeros[5]).toLocaleString(undefined, {maximumFractionDigits:0})
+		document.getElementById("mortesM").innerHTML = Math.ceil(numeros[7]).toLocaleString(undefined, {maximumFractionDigits:0})
+		
+		if(numeros[8]>0.15){
+			p='<span class="badge" style="color: white; background: #F94144">Mortes em crescimento ('+((100*numeros[8]).toFixed(0))+'%)</span>'
+		}
+		else if(numeros[8]=='inf'){
+			p='<span class="badge" style="color: white; background: #F94144">Mortes em crescimento (500+%)</span>'
+		}
+		else if(numeros[8]<-0.15){
+			p='<span class="badge" style="color: white; background: #F9C74F">Mortes decaindo ('+((100*numeros[8]).toFixed(0))+'%)</span>'
+		}
+		else if(numeros[8]=='-inf'){
+			p='<span class="badge" style="color: white; background: #F9C74F">Mortes decaindo (-500%)</span>'
+		}
+		else if(isNaN(numeros[8])){
+			p='<span class="badge" style="color: white; background: #718AA1">Não existem dados</span>'
+		}
+		else{
+			p='<span class="badge" style="color: white; background: #F8961E">Mortes em estabilidade ('+Math.ceil(numeros[7])+' mortes por dia)</span>'
+		}
+		
+		document.getElementById("parecer").innerHTML = p
+	}
+    </script>
+    </head>
+    <body style="padding-top: 50px; background: linear-gradient(to right, #4D908E, #577590, #277DA1);">
+    <div id="fb-root"></div>
+	<script async defer crossorigin="anonymous" src="https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v7.0" nonce="YJpgm7OP"></script>
+		<nav class="fixed-top navbar navbar-expand-lg navbar-light bg-light">
+		  <span class="navbar-brand mb-0 h1"><i class="fa fa-heartbeat"></i> Painel Covid-19</span>
+			    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarText">
+				<ul class="navbar-nav mr-auto">
+			  	  <li class="nav-item">
+					<a class="nav-link" href="index.html">Análise nacional</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="estado.html">Análise por estado</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="municipio.html">Análise por município</a>
+				  </li>
+				</ul>
+				<span class="navbar-text">
+				  <a class="nav-link scrooldown" style="cursor: pointer" href="#sobre">Sobre</a>
+				</span>
+					<div class="fb-share-button navbar-text" data-href="https://luizsouthier.github.io/covid/" data-layout="button" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fluizsouthier.github.io%2Fcovid%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Compartilhar</a></div>
+					<span class="navbar-text" style="margin: 0 0 -5px 5px"><a class="twitter-share-button"
+				  href="https://twitter.com/intent/tweet?text=Consulte informações detalhadas do seu estado ou município sobre Covid-19"
+				  data-size="large">Tweet</a>
+				  </span>
+				</div>
+		</nav>
+		 <div class="m-5 row">
+			<div class="col-2">
+				<h4 style="color: white; cursor: pointer" onClick="window.location='estado.html?state='+estado"><i class="fa fa-arrow-left"></i>Voltar para análise de <span id="sn"></span></h4>
+				<script>document.getElementById('sn').innerHTML=estado;</script>
+			</div>
+			<div class="col-2">
+
+			</div>
+		 	<div class="col-2">
+			<h4 style="color: white">Município:</h4>
+			</div>
+			<div class="col-6">
+			<select class="form-control" id="sel_estado" onChange="window.location='municipio.html?state='+estado+'&muni='+this.value">
+			</select>
+			</div>
+		  </div>
+		<div class="row m-5">
+			<div class="col-md border m-2 shadow-lg"  align="center" style="background: white; border-radius: 40px">
+				<div class="my-1" align="center"><h4 id="casosA"></h4></div>
+				<p class="font-weight-light">casos totais</p>
+			</div>
+			<div class="col-md border m-2 shadow-lg" align="center" style="background: white; border-radius: 40px">
+				<div class="my-1" align="center"><h4 id="casos"></h4></div>
+				<p class="font-weight-light">casos novos</p>
+			</div>
+			<div class="col-md border m-2 shadow-lg" align="center" style="background: white; border-radius: 40px">
+				<div class="my-1" align="center"><h4 id="casosM"></h4></div>
+				<p class="font-weight-light">média móvel de casos</p>
+			</div>
+			<div class="col-md border m-2 shadow-lg" align="center" style="background: white; border-radius: 40px">
+				<div class="my-1" align="center"><h4 id="mortesA"></h4></div>
+				<p class="font-weight-light">mortes totais</p>
+			</div>
+			<div class="col-md border m-2 shadow-lg" align="center" style="background: white; border-radius: 40px">
+				<div class="my-1" align="center"><h4 id="mortes"></h4></div>
+				<p class="font-weight-light">mortes novas</p>
+			</div>
+			<div class="col-md border m-2 shadow-lg" align="center" style="background: white; border-radius: 40px">
+				<div class="my-1" align="center"><h4 id="mortesM"></h4></div>
+				<p class="font-weight-light">média móvel de mortes</p>
+			</div>
+		</div>
+		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 40px">
+			<div class="row mx-auto my-3"><h4>Situação geral - <span id="s3"></span> <span id="parecer"></span></h4></div>
+			<script>document.getElementById('s3').innerHTML=municipio;</script>
+			<div style="width: 100%;" align="center">
+					<img id="atual_imagem" style="max-height: 350px; max-width: 100%" >
+			</div>
+		</div>
+		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 40px">
+			<div class="row mx-auto my-3"><h4>Mortes - <span id="s4"></span></h4></div>
+			<script>document.getElementById('s4').innerHTML=municipio;</script>
+			<div id="nacionalobitos" style="width: 100%; height: 400px;"></div>
+			<div class="row mx-auto my-3">
+				<p class="font-weight-light m-5">
+				Fonte: Secretarias Estaduais de Saúde<br>A média móvel é calculada sobre os últimos 14 dias. É utilizada como indicador para atenuar as oscilações da curva causadas pelo represamento de notificações aos fins de semana. </p>
+			</div>
+		</div>
+		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 40px">
+			<div class="row mx-auto my-3"><h4>Casos - <span id="s5"></span></h4></div>
+			<script>document.getElementById('s5').innerHTML=municipio;</script>
+			<div id="nacionalcasos" style="width: 100%; height: 400px;"></div>
+			<div class="row mx-auto my-3">
+				<p class="font-weight-light m-5">
+				Fonte: Secretarias Estaduais de Saúde<br>A média móvel é calculada sobre os últimos 14 dias. É utilizada como indicador para atenuar as oscilações da curva causadas pelo represamento de notificações aos fins de semana. </p>
+			</div>
+		</div>
+		<div class="row border m-5 shadow-lg " style="background: white; border-radius: 40px">
+			<div class="row mx-auto my-3"><h4>Casos e Mortes acumulados - <span id="s6"></span></h4></div>
+			<script>document.getElementById('s6').innerHTML=municipio;</script>
+			<div class="row" style="width: 100%;">
+				<div class="col-md">
+					<div id="nacionalcasosA" style="width: 100%; height: 400px;"></div>
+				</div>
+				<div class="col-md">
+					<div id="nacionalobitosA" style="width: 100%; height: 400px;"></div>
+				</div>
+			</div>
+			<div class="row mx-auto my-3">
+				<p class="font-weight-light m-5">Fonte: Secretarias Estaduais de Saúde</p>
+			</div>
+		</div>
+		<div class="row border m-5" style="background: white; border-radius: 40px" id="sobre">
+			<div class="row mx-auto my-3" align="center">
+				<p class="font-weight-light m-5">Site elaborado pelo doutorando <a href="https://luizsouthier.github.io/" target="_blank">Luiz Southier</a>.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Design por <a target="_blank" href="https://www.instagram.com/visualartdigital/"><img src="logo.png" width="100px"></a></p>
+			</div>
+		</div>
+	</body>
+</html>
