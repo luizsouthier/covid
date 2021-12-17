@@ -261,7 +261,23 @@
     </script>
     </head>
     <body style="padding-top: 50px; background: linear-gradient(to right, #4D908E, #577590, #277DA1);">
-    <div id="fb-root"></div>
+    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="myLargeModalLabel">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="background-color: black">
+      <div class="modal-body" style="font-size: 40px;letter-spacing: 2px;word-spacing: 2px;color: #FFFFFF;font-weight: 700;">
+        <p>Devido ao ataque hacker ocorrido aos sistemas do Ministério da Saúde, essa página não pode mais ser atualizada e foi descontinuada.</p>
+		<p>Clique OK para visualizar a última versão disponível.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    $("#myLargeModalLabel").modal('show');
+</script>
+	<div id="fb-root"></div>
 	<script async defer crossorigin="anonymous" src="https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v7.0" nonce="YJpgm7OP"></script>
 		<nav class="fixed-top navbar navbar-expand-lg navbar-light bg-light">
 		  <span class="navbar-brand mb-0 h1"><i class="fa fa-heartbeat"></i> Painel Covid-19</span>
